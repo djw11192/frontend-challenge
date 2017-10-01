@@ -24,54 +24,53 @@ var labelProbabilities = [];
 var chordCountsInLabels = {};
 var probabilityOfChordsInLabels = {};
 
+//replaced for loop with forEach//
+// Use +=1 in last if statement //
 function train(chords, label){
   songs.push([label, chords]);
   labels.push(label);
-  for (var i = 0; i < chords.length; i++){
-    if(!allChords.includes(chords[i])){
-      allChords.push(chords[i]);
+  chords.forEach(function(chord){
+    if(!allChords.includes(chord)){
+      allChords.push(chord);
     }
-  }
-  if(!!(Object.keys(labelCounts).includes(label))){
-    labelCounts[label] = labelCounts[label] + 1;
+  })
+  if(Object.keys(labelCounts).includes(label)){
+    labelCounts[label] += 1;
   } else {
     labelCounts[label] = 1;
   }
 };
 
-function getNumberOfSongs(){
-   return songs.length;
-};
-
+//Unnecessary to write function just for songs.length. Plug in songs.length for numberOfSongs /
 function setLabelProbabilities(){
   Object.keys(labelCounts).forEach(function(label){
-    var numberOfSongs = getNumberOfSongs();
-    labelProbabilities[label] = labelCounts[label] / numberOfSongs;
+    labelProbabilities[label] = labelCounts[label] / songs.length;
   });
 };
 
+//replace "i" with "song" and "j" with chord for easier readability//
+//Also use += 1 when setting chord count in if statement
 function setChordCountsInLabels(){
-  songs.forEach(function(i){
-    if(chordCountsInLabels[i[0]] === undefined){
-      chordCountsInLabels[i[0]] = {};
+  songs.forEach(function(song){
+    if(chordCountsInLabels[song[0]] === undefined){
+      chordCountsInLabels[song[0]] = {};
     }
-    i[1].forEach(function(j){
-      if(chordCountsInLabels[i[0]][j] > 0){
-        chordCountsInLabels[i[0]][j] =
-chordCountsInLabels[i[0]][j] + 1;
+    song[1].forEach(function(chord){
+      if(chordCountsInLabels[song[0]][chord] > 0){
+        chordCountsInLabels[song[0]][chord] += 1;
       } else {
-        chordCountsInLabels[i[0]][j] = 1;
+        chordCountsInLabels[song[0]][chord] = 1;
       }
     });
   });
 }
 
+//Replace "i" and "j". Also can use /= at the end to clean up code
 function setProbabilityOfChordsInLabels(){
   probabilityOfChordsInLabels = chordCountsInLabels;
-  Object.keys(probabilityOfChordsInLabels).forEach(function(i){
-    Object.keys(probabilityOfChordsInLabels[i]).forEach(function(j){
-      probabilityOfChordsInLabels[i][j] =
-probabilityOfChordsInLabels[i][j] * 1.0 / songs.length;
+  Object.keys(probabilityOfChordsInLabels).forEach(function(count){
+    Object.keys(probabilityOfChordsInLabels[count]).forEach(function(chord){
+      probabilityOfChordsInLabels[count][chord] /= songs.length;
     });
   });
 }
@@ -91,23 +90,20 @@ setChordCountsInLabels();
 setProbabilityOfChordsInLabels();
 
 
-
+//Remove unnecessary var ttal//
+//Change last if statement to only check true values; the check for undefined does not do anything//
 function classify(chords){
-  var ttal = labelProbabilities;
-  console.log(ttal);
+  console.log(labelProbabilities);
   var classified = {};
-  Object.keys(ttal).forEach(function(obj){
-    var first = labelProbabilities[obj] + 1.01;
+  Object.keys(labelProbabilities).forEach(function(probability){
+    var first = labelProbabilities[probability] + 1.01;
     chords.forEach(function(chord){
-      var probabilityOfChordInLabel =
-probabilityOfChordsInLabels[obj][chord];
-      if(probabilityOfChordInLabel === undefined){
-        first + 1.01;
-      } else {
+      var probabilityOfChordInLabel = probabilityOfChordsInLabels[probability][chord];
+      if(probabilityOfChordInLabel){
         first = first * (probabilityOfChordInLabel + 1.01);
       }
     });
-    classified[obj] = first;
+    classified[probability] = first;
   });
   console.log(classified);
 };
