@@ -6,7 +6,7 @@
 5. function for description; at 48th character and above show elipsis. If 48th is in the middle of a word, don't show that word
 
 */
-angular.module('petlist', ['ui.router', 'petlist.services'])
+angular.module('petlist', ['ui.router'])
 
   .config(function ($stateProvider, $urlRouterProvider) {
 
@@ -21,16 +21,17 @@ angular.module('petlist', ['ui.router', 'petlist.services'])
 
   .controller('SearchController', SearchController)
 
-  SearchController.$inject = ['$http', 'PetFactory']
+  SearchController.$inject = ['$http']
 
-  function SearchController($http, PetFactory){
+  function SearchController($http){
     var vm = this;
 
     //First make init function to load all pet list data
-    init = function(){
-      $http.get('/web-api/search.json')
+    vm.init = function(){
+      $http.get('/static/search.json')
         .then(function(response){
-          var searchArr = response.data.search
+          console.log(response)
+          var searchArr = response.data.jsonData.search
           formatList(searchArr)
           vm.petlist = searchArr;
         })
@@ -59,7 +60,14 @@ angular.module('petlist', ['ui.router', 'petlist.services'])
       })
     }
 
-
-
-    init();
+    //getBoarding function that makes http request//
+    vm.getOption = function(val){
+      //
+      $http.get('/static/search.json?service='+val)
+        .then(function(response){
+          //You can use service paramater here or in the router to manipulate data
+          console.log(response.data)
+        })
+    }
+    vm.init();
   }
