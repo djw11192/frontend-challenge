@@ -30,20 +30,36 @@ angular.module('petlist', ['ui.router', 'petlist.services'])
     init = function(){
       $http.get('/web-api/search.json')
         .then(function(response){
-          setUrl(response)
-          setName(response)
+          var searchArr = response.data.search
+          formatList(searchArr)
+          console.log(searchArr)
         })
     }
 
-    function setUrl(listData){
-      var searchArr = listData.data.search;
-      searchArr.forEach(function(listItem){
+    function formatList(listData){
+      listData.forEach(function(listItem){
         listItem.title = listItem.title.trim()//trim takes away and leading or ending spaces
           .replace(/[^a-zA-Z0-9\s]/g, '')//take out non-alpha numeric characters
           .replace(/\s+/g, '-')//replace spaces with dashes
           .toLowerCase()
+
+        //Capitalize first letter of First Name
+        listItem.user.first = listItem.user.first[0].toUpperCase() + listItem.user.first.substr(1);
+        //Only show first letter of last name and capitalize it
+        listItem.user.last = listItem.user.last[0].toUpperCase();
+
+        //shorten the description to 48 characters
+        var maxLength = 48;
+        var shortDescription = listItem.description.substr(0, maxLength+1);
+        //shorten again if 48th character is in a word
+        if(shortDescription.charAt(48) !== " " && shortDescription.length > 47){
+          listItem.description = shortDescription.substr(0, Math.min(shortDescription.length, shortDescription.lastIndexOf(" "))) + "..."
+        }
+
       })
     }
+
+
 
     init();
   }
