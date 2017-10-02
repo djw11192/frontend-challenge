@@ -28,6 +28,7 @@ angular.module('petlist', ['ui.router'])
 
     //First make init function to load all pet list data
     vm.init = function(){
+      //request to primaryRouter (angular-petlist/routers/primaryRouter.js)
       $http.get('/static/search.json')
         .then(function(response){
           console.log(response)
