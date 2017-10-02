@@ -32,13 +32,14 @@ angular.module('petlist', ['ui.router', 'petlist.services'])
         .then(function(response){
           var searchArr = response.data.search
           formatList(searchArr)
-          console.log(searchArr)
+          vm.petlist = searchArr;
         })
     }
 
     function formatList(listData){
       listData.forEach(function(listItem){
-        listItem.title = listItem.title.trim()//trim takes away and leading or ending spaces
+        //add "url" to listData object and use formatted titles for values
+        listItem.url = listItem.title.trim()//trim takes away and leading or ending spaces
           .replace(/[^a-zA-Z0-9\s]/g, '')//take out non-alpha numeric characters
           .replace(/\s+/g, '-')//replace spaces with dashes
           .toLowerCase()
@@ -55,7 +56,6 @@ angular.module('petlist', ['ui.router', 'petlist.services'])
         if(shortDescription.charAt(48) !== " " && shortDescription.length > 47){
           listItem.description = shortDescription.substr(0, Math.min(shortDescription.length, shortDescription.lastIndexOf(" "))) + "..."
         }
-
       })
     }
 

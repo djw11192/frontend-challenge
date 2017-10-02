@@ -1,5 +1,33 @@
 <div ng-controller="SearchController as sc" class="container">
-  <div class="searchBar">
+  <div class="resultsContainer col-lg-8 col-lg-offset-2">
+    <div class="optionsContainer">
+      <div class="col-sm-4">
+        <h3>Looking For:</h3>
+      </div>
+      <div class="checkCol col-xs-4">
+        <label class="form-check-label">
+          <input type="radio" name="petOption" class="form-check-input">
+          Boarding
+          <br>
+          <span>at Host's home</span>
+        </label>
+      </div>
+      <div class="checkCol col-xs-4">
+        <label class="form-check-label">
+          <input type="radio" name="petOption" class="form-check-input">
+          Sitting
+          <br>
+          <span>at my home</span>
+        </label>
+      </div>
+    </div>
+    <div ng-repeat="post in sc.petlist" class="dataList">
+      <div class="singlePost col-md-12">
+        <h4><a href="/{{post.url}}">{{post.title}}</a></h4>
+        <h5>{{post.user.first}} {{post.user.last}}.</h5>
+        <p>{{post.description}}</p>
+      </div>
+    </div>
   </div>
 
 </div>
