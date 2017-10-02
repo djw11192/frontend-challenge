@@ -1,0 +1,21 @@
+.optionsContainer label span{
+  font-size: 14px;
+  padding-left: 18px;
+  font-weight: 300;
+}
+
+.optionsContainer{
+  margin-top:30px;
+  height: 110px;
+  background: #eee;
+}
+
+.optionsContainer .checkCol{
+  padding-top: 20px;
+}
+
+@media screen and (max-width: 600px){
+  .optionsContainer{
+    height: 150px;
+  }
+}
